@@ -20,7 +20,7 @@ class ArticleFilter(filters.FilterSet):
 
     class Meta:
         model = Article
-        fields = ('publish_at', )
+        fields = ('publish_at',)
 
 
 class ArticleViewSet(viewsets.ModelViewSet):
@@ -32,7 +32,6 @@ class ArticleViewSet(viewsets.ModelViewSet):
 
     search_fields = ['title', 'category']
     ordering_fields = ['title', 'created_at']
-
 
     def get_serializer_class(self):
         if self.action == 'list':
@@ -47,10 +46,10 @@ class ArticleViewSet(viewsets.ModelViewSet):
         return []
 
 
-class ReviewViewSet(mixins.CreateModelMixin,
-                    mixins.UpdateModelMixin,
-                    mixins.DestroyModelMixin,
-                    viewsets.GenericViewSet):
+class ArticleCommentViewSet(mixins.CreateModelMixin,
+                            mixins.UpdateModelMixin,
+                            mixins.DestroyModelMixin,
+                            viewsets.GenericViewSet):
     queryset = ArticleComment.objects.all()
     serializer_class = ArticleCommentSerializer
 
@@ -67,8 +66,6 @@ class ReviewViewSet(mixins.CreateModelMixin,
         comments = article.reviews.all()
         serializer = ArticleCommentSerializer(comments, many=True)
         return Response(serializer.data, status=200)
-
-
 
     # def get(self, request):
     #     articles = Article.objects.all()
@@ -101,6 +98,3 @@ class ReviewViewSet(mixins.CreateModelMixin,
     #     return Response({
     #         'message': f'Article with id {pk} has been deleted.'
     #     }, status=204)
-
-
-
