@@ -1,4 +1,4 @@
-from django_filters import filters
+from django_filters import rest_framework as filters
 from rest_framework import filters as rest_filters
 from rest_framework import viewsets, mixins
 from django.http import HttpResponse
@@ -25,6 +25,14 @@ class ArticleFilter(filters.FilterSet):
 
 class ArticleViewSet(viewsets.ModelViewSet):
     queryset = Article.objects.all()
+
+    filter_backends = [filters.DjangoFilterBackend, rest_filters.SearchFilter,
+                       rest_filters.OrderingFilter]
+    filterset_class = ArticleFilter
+
+    search_fields = ['title', 'category']
+    ordering_fields = ['title', 'created_at']
+
 
     def get_serializer_class(self):
         if self.action == 'list':
