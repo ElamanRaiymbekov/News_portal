@@ -31,7 +31,6 @@ class User(AbstractBaseUser):
     surname = models.CharField(max_length=50)
     is_active = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
-    is_author = models.BooleanField(default=False)
     activation_code = models.CharField(max_length=20, blank=True)
 
     objects = UserManager()
