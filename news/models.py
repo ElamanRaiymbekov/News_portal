@@ -42,6 +42,6 @@ class ArticleComment(models.Model):
     text = models.TextField()
     rating = models.SmallIntegerField(default=1)
     created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return self.article
+    #
+    # def __str__(self):
+    #     return self.article

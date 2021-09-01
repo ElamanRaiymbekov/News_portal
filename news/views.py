@@ -2,12 +2,12 @@ from django_filters import rest_framework as filters
 from rest_framework import filters as rest_filters
 from rest_framework import viewsets, mixins
 from django.http import HttpResponse
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 from rest_framework.decorators import action
 
 from .models import Article, ArticleComment
-from .permissions import IsAuthorOrIsAdmin
+from news.permissions import IsAuthorOrIsAdmin
 from .serializers import ArticleSerializer, ArticleDetailsSerializer, CreateArticleSerializer, ArticleCommentSerializer
 
 
@@ -42,7 +42,7 @@ class ArticleViewSet(viewsets.ModelViewSet):
 
     def get_permissions(self):
         if self.action in ['create', 'update', 'partial_update', 'destroy']:
-            return [IsAuthorOrIsAdmin()]
+            return [IsAdminUser()]
         return []
 
 
