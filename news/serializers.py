@@ -1,17 +1,21 @@
 from rest_framework import serializers
-from .models import Article, ArticleComment
+from rest_framework.serializers import ModelSerializer
+
+from .models import Article, ArticleComment, Like
+
+from rest_framework.fields import SerializerMethodField
 
 
 class ArticleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Article
-        fields = ('id', 'title', 'content', 'author', 'created_at')
+        fields = ('id', 'title', 'content', 'author', 'created_at', 'likes')
 
 
 class ArticleDetailsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Article
-        fields = ('title', 'content', 'image', 'author', 'category')
+        fields = ('title', 'content', 'image', 'author', 'category', 'comments', 'likes')
 
 
 class CreateArticleSerializer(serializers.ModelSerializer):
@@ -25,7 +29,7 @@ class ArticleCommentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ArticleComment
-        fields = ('id', 'author', 'article', 'text', 'rating', 'created_at')
+        fields = ('text',)
 
     def validate_product(self, article):
         request = self.context.get('request')
@@ -43,3 +47,18 @@ class ArticleCommentSerializer(serializers.ModelSerializer):
         request = self.context.get('request')
         validated_data['author'] = request.user
         return super().create(validated_data)
+
+
+class LikeSerializer(serializers.ModelSerializer):
+    total_likes = SerializerMethodField()
+
+    class Meta:
+        model = Article
+        fields = ('title', 'content', 'user')
+
+    def get_total_likes(self, instance):
+        return instance.likes.all().count()
+
+    # class Meta:
+    #     model = Like
+    #     fields = ('article', 'like', 'in_bookmarks', 'rate')

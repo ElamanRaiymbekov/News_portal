@@ -1,6 +1,8 @@
+from django.conf import settings
 from django.db import models
 from account.models import User
-
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.fields import GenericForeignKey
 
 NEWS_CATEGORIES = (
     ('sport', 'Спорт'),
@@ -30,6 +32,8 @@ class Article(models.Model):
         return self.title
 
 
+
+
 class ArticleComment(models.Model):
     article = models.ForeignKey(Article,
                                 on_delete=models.CASCADE,
@@ -42,6 +46,26 @@ class ArticleComment(models.Model):
     text = models.TextField()
     rating = models.SmallIntegerField(default=1)
     created_at = models.DateTimeField(auto_now_add=True)
-    #
-    # def __str__(self):
-    #     return self.article
+
+    def __str__(self):
+        return self.article
+
+
+class Like(models.Model):
+    RATE_CHOICES = (
+        (1, 'Нормально'),
+        (2, 'Хорошо'),
+        (3, 'Отлично'),
+        (4, 'Классно'),
+        (5, 'Супер!')
+    )
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    article = models.ForeignKey(Article, related_name='likes', on_delete=models.CASCADE)
+    like = models.BooleanField(default=False)
+    in_bookmarks = models.BooleanField(default=False)
+    rate = models.PositiveSmallIntegerField(choices=RATE_CHOICES)
+
+    def __str__(self):
+        return self.user
+

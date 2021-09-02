@@ -5,10 +5,12 @@ from django.http import HttpResponse
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 from rest_framework.decorators import action
+from rest_framework.viewsets import GenericViewSet
 
-from .models import Article, ArticleComment
+from .models import Article, ArticleComment, Like
 from news.permissions import IsAuthorOrIsAdmin
-from .serializers import ArticleSerializer, ArticleDetailsSerializer, CreateArticleSerializer, ArticleCommentSerializer
+from .serializers import ArticleSerializer, ArticleDetailsSerializer, CreateArticleSerializer, ArticleCommentSerializer, \
+    LikeSerializer
 
 
 def index(self):
@@ -20,7 +22,7 @@ class ArticleFilter(filters.FilterSet):
 
     class Meta:
         model = Article
-        fields = ('publish_at',)
+        fields = ('id', 'author',)
 
 
 class ArticleViewSet(viewsets.ModelViewSet):
@@ -30,8 +32,8 @@ class ArticleViewSet(viewsets.ModelViewSet):
                        rest_filters.OrderingFilter]
     filterset_class = ArticleFilter
 
-    search_fields = ['title', 'category']
-    ordering_fields = ['title', 'created_at']
+    search_fields = ['title', 'category', 'content']
+    ordering_fields = ['id', 'title', 'created_at']
 
     def get_serializer_class(self):
         if self.action == 'list':
@@ -46,12 +48,13 @@ class ArticleViewSet(viewsets.ModelViewSet):
         return []
 
 
-class ArticleCommentViewSet(mixins.CreateModelMixin,
-                            mixins.UpdateModelMixin,
-                            mixins.DestroyModelMixin,
-                            viewsets.GenericViewSet):
+class ArticleCommentViewSet(viewsets.ModelViewSet):
     queryset = ArticleComment.objects.all()
     serializer_class = ArticleCommentSerializer
+
+    class Meta:
+        model = ArticleComment
+        fields = ('author', 'text', 'created_at')
 
     def get_permissions(self):
         if self.action == 'create':
@@ -63,9 +66,40 @@ class ArticleCommentViewSet(mixins.CreateModelMixin,
     @action(['GET'], detail=True)
     def comments(self, request, pk=None):
         article = self.get_object()
-        comments = article.reviews.all()
+        comments = article.comments.all()
         serializer = ArticleCommentSerializer(comments, many=True)
         return Response(serializer.data, status=200)
+
+
+class LikeView(mixins.UpdateModelMixin, GenericViewSet):
+
+    permission_classes = [IsAuthenticated]
+    queryset = Like.objects.all().count()
+    serializer_class = LikeSerializer
+    lookup_field = 'article'
+
+
+
+
+
+
+    # def like(self, request, pk):
+    #     article = self.get.objects()
+    #     user = request.user
+    #     like_obj, created = Like.objects.get_or_create(article=article, user=user)
+    #
+    #     if like_obj.is_liked:
+    #         like_obj.is_liked = False
+    #         like_obj.save()
+    #         return Response('disliked')
+    #     else:
+    #         like_obj.is_liked = True
+    #         like_obj.save()
+    #         return Response('liked')
+
+
+
+
 
     # def get(self, request):
     #     articles = Article.objects.all()
