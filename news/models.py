@@ -66,6 +66,4 @@ class Like(models.Model):
     in_bookmarks = models.BooleanField(default=False)
     rate = models.PositiveSmallIntegerField(choices=RATE_CHOICES)
 
-    def __str__(self):
-        return self.user
 

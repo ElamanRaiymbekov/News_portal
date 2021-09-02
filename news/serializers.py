@@ -50,15 +50,7 @@ class ArticleCommentSerializer(serializers.ModelSerializer):
 
 
 class LikeSerializer(serializers.ModelSerializer):
-    total_likes = SerializerMethodField()
 
     class Meta:
-        model = Article
-        fields = ('title', 'content', 'user')
-
-    def get_total_likes(self, instance):
-        return instance.likes.all().count()
-
-    # class Meta:
-    #     model = Like
-    #     fields = ('article', 'like', 'in_bookmarks', 'rate')
+        model = Like
+        fields = ('article', 'like', 'in_bookmarks', 'rate')

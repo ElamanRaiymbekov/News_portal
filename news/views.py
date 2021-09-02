@@ -75,12 +75,9 @@ class LikeView(mixins.UpdateModelMixin, GenericViewSet):
 
     permission_classes = [IsAuthenticated]
     queryset = Like.objects.all().count()
+    print(queryset)
     serializer_class = LikeSerializer
     lookup_field = 'article'
-
-
-
-
 
 
     # def like(self, request, pk):
