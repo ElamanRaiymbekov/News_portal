@@ -1,15 +1,17 @@
 from rest_framework import serializers
-from rest_framework.serializers import ModelSerializer
 
 from .models import Article, ArticleComment, Like
-
-from rest_framework.fields import SerializerMethodField
 
 
 class ArticleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Article
-        fields = ('id', 'title', 'content', 'author', 'created_at', 'likes')
+        fields = ('id', 'title', 'content', 'author', 'created_at')
+
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        representation['likes'] = instance.likes.filter(like=True).count()
+        return representation
 
 
 class ArticleDetailsSerializer(serializers.ModelSerializer):
@@ -29,7 +31,7 @@ class ArticleCommentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ArticleComment
-        fields = ('text',)
+        fields = ('article', 'text', 'author', 'created_at', 'rating')
 
     def validate_product(self, article):
         request = self.context.get('request')

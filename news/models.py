@@ -11,7 +11,7 @@ NEWS_CATEGORIES = (
     ('politics', 'Политика'),
     ('economy', 'Экономика'),
     ('other', 'Разное'),
-    ('world', 'Мир'),
+    ('world',  'Мир'),
 )
 
 
@@ -30,8 +30,6 @@ class Article(models.Model):
 
     def __str__(self):
         return self.title
-
-
 
 
 class ArticleComment(models.Model):

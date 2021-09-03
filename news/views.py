@@ -54,7 +54,7 @@ class ArticleCommentViewSet(viewsets.ModelViewSet):
 
     class Meta:
         model = ArticleComment
-        fields = ('author', 'text', 'created_at')
+        fields = ('author', 'text', 'created_at', 'rate')
 
     def get_permissions(self):
         if self.action == 'create':
@@ -74,26 +74,13 @@ class ArticleCommentViewSet(viewsets.ModelViewSet):
 class LikeView(mixins.UpdateModelMixin, GenericViewSet):
 
     permission_classes = [IsAuthenticated]
-    queryset = Like.objects.all().count()
-    print(queryset)
+    queryset = Like.objects.all()
     serializer_class = LikeSerializer
     lookup_field = 'article'
 
-
-    # def like(self, request, pk):
-    #     article = self.get.objects()
-    #     user = request.user
-    #     like_obj, created = Like.objects.get_or_create(article=article, user=user)
-    #
-    #     if like_obj.is_liked:
-    #         like_obj.is_liked = False
-    #         like_obj.save()
-    #         return Response('disliked')
-    #     else:
-    #         like_obj.is_liked = True
-    #         like_obj.save()
-    #         return Response('liked')
-
+    class Meta:
+        model = Like
+        fields = ('__all__', )
 
 
 
