@@ -60,7 +60,7 @@ class ArticleCommentViewSet(viewsets.ModelViewSet):
         if self.action == 'create':
             return [IsAuthenticated()]
         elif self.action in ['update', 'partial_update', 'destroy']:
-            return [IsAuthenticated(), IsAuthorOrIsAdmin()]
+            return [IsAuthenticated(), IsAdminUser()]
         return []
 
     @action(['GET'], detail=True)
@@ -71,7 +71,7 @@ class ArticleCommentViewSet(viewsets.ModelViewSet):
         return Response(serializer.data, status=200)
 
 
-class LikeView(mixins.UpdateModelMixin, GenericViewSet):
+class LikeView(viewsets.ModelViewSet):
 
     permission_classes = [IsAuthenticated]
     queryset = Like.objects.all()

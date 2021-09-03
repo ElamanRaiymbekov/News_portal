@@ -28,8 +28,8 @@ class Article(models.Model):
     class Meta:
         ordering = ['title', 'category']
 
-    def __str__(self):
-        return self.title
+    # def __str__(self):
+    #     return self.title
 
 
 class ArticleComment(models.Model):
@@ -44,9 +44,9 @@ class ArticleComment(models.Model):
     text = models.TextField()
     rating = models.SmallIntegerField(default=1)
     created_at = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return self.article
+    #
+    # def __str__(self):
+    #     return self.article
 
 
 class Like(models.Model):
